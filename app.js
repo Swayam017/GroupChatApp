@@ -4,7 +4,7 @@ const cors = require("cors");
 const path = require("path");
 const sequelize = require("./config/database");
 const authRoutes = require("./routes/authRoutes");
-
+const chatRoutes = require("./routes/chatRoutes");
 const app = express();
 
 app.use(cors());
@@ -13,6 +13,8 @@ app.use(express.static("public"));
 
 // APIs
 app.use("/api", authRoutes);
+app.use("/api/chat", chatRoutes);
+
 
 sequelize.sync()
   .then(() => console.log("Database connected"))

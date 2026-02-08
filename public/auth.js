@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (res.ok) {
           localStorage.setItem("token", result.token);
-          alert("Login successful");
+           window.location.href = "chat.html";
         } else {
           alert(result.message || "Invalid credentials");
         }
