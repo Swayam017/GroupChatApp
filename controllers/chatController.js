@@ -1,7 +1,6 @@
 const Message = require("../models/Message");
 const { Op } = require("sequelize");
 
-// Send message
 exports.sendMessage = async (req, res) => {
   try {
     const { senderId, receiverId, content } = req.body;
@@ -12,13 +11,16 @@ exports.sendMessage = async (req, res) => {
       content
     });
 
+    // 🔥 Emit real-time message
+    const io = req.app.get("io");
+    io.emit("newMessage", message);
+
     res.status(201).json(message);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-// Get chat history
 exports.getMessages = async (req, res) => {
   const { userId, otherUserId } = req.params;
 

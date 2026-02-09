@@ -1,24 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  const userId = 1;
+  const userId = 1;        // later from JWT
   const otherUserId = 2;
 
   const messagesDiv = document.getElementById("messages");
   const input = document.getElementById("msgInput");
   const sendBtn = document.getElementById("sendBtn");
 
-  // SAFETY CHECK (optional but helpful)
-  if (!messagesDiv || !input || !sendBtn) {
-    console.error("Chat elements not found in DOM");
-    return;
-  }
+  // 🔌 Connect to WebSocket server
+  const socket = io("http://localhost:3000");
 
   async function loadMessages() {
     const res = await fetch(
       `http://localhost:3000/api/chat/${userId}/${otherUserId}`
     );
     const messages = await res.json();
-
     messagesDiv.innerHTML = "";
     messages.forEach(renderMessage);
     scrollBottom();
@@ -47,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const text = input.value.trim();
     if (!text) return;
 
-    const res = await fetch("http://localhost:3000/api/chat/send", {
+    await fetch("http://localhost:3000/api/chat/send", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -57,11 +53,19 @@ document.addEventListener("DOMContentLoaded", () => {
       })
     });
 
-    const msg = await res.json();
-    renderMessage(msg);
-    scrollBottom();
     input.value = "";
   }
+
+  // 🔥 Receive live messages
+  socket.on("newMessage", (msg) => {
+    if (
+      (msg.senderId === userId && msg.receiverId === otherUserId) ||
+      (msg.senderId === otherUserId && msg.receiverId === userId)
+    ) {
+      renderMessage(msg);
+      scrollBottom();
+    }
+  });
 
   function scrollBottom() {
     messagesDiv.scrollTo({
@@ -70,9 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // EVENTS
   sendBtn.addEventListener("click", sendMessage);
-
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
