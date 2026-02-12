@@ -1,20 +1,38 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  const userId = 1;        // later from JWT
-  const otherUserId = 2;
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    alert("Please login first");
+    window.location.href = "index.html";
+    return;
+  }
+
+  // Decode JWT safely
+  const payload = JSON.parse(atob(token.split(".")[1]));
+  const userId = payload.userId;
+
+  const otherUserId = userId === 1 ? 2 : 1;
+
 
   const messagesDiv = document.getElementById("messages");
   const input = document.getElementById("msgInput");
   const sendBtn = document.getElementById("sendBtn");
 
-  // 🔌 Connect to WebSocket server
   const socket = io("http://localhost:3000");
 
   async function loadMessages() {
     const res = await fetch(
-      `http://localhost:3000/api/chat/${userId}/${otherUserId}`
+      `http://localhost:3000/api/chat/${userId}/${otherUserId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
     );
+
     const messages = await res.json();
+
     messagesDiv.innerHTML = "";
     messages.forEach(renderMessage);
     scrollBottom();
@@ -22,7 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderMessage(msg) {
     const div = document.createElement("div");
-    div.className = msg.senderId === userId ? "sent" : "received";
+
+    div.className =
+      msg.senderId === userId ? "sent" : "received";
 
     div.innerHTML = `
       <div class="bubble">
@@ -39,24 +59,19 @@ document.addEventListener("DOMContentLoaded", () => {
     messagesDiv.appendChild(div);
   }
 
-  async function sendMessage() {
+  function sendMessage() {
     const text = input.value.trim();
     if (!text) return;
 
-    await fetch("http://localhost:3000/api/chat/send", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        senderId: userId,
-        receiverId: otherUserId,
-        content: text
-      })
+    socket.emit("chat-message", {
+      senderId: userId,
+      receiverId: otherUserId,
+      content: text
     });
 
     input.value = "";
   }
 
-  // 🔥 Receive live messages
   socket.on("newMessage", (msg) => {
     if (
       (msg.senderId === userId && msg.receiverId === otherUserId) ||
@@ -75,6 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   sendBtn.addEventListener("click", sendMessage);
+
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
