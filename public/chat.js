@@ -19,7 +19,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const input = document.getElementById("msgInput");
   const sendBtn = document.getElementById("sendBtn");
 
-  const socket = io("http://localhost:3000");
+ const socket = io("http://localhost:3000", {
+  auth: {
+    token: token
+  }
+});
+
 
   async function loadMessages() {
     const res = await fetch(
@@ -38,26 +43,27 @@ document.addEventListener("DOMContentLoaded", () => {
     scrollBottom();
   }
 
-  function renderMessage(msg) {
-    const div = document.createElement("div");
+ function renderMessage(msg) {
+  const div = document.createElement("div");
 
-    div.className =
-      msg.senderId === userId ? "sent" : "received";
+  div.className =
+    msg.senderId === userId ? "sent" : "received";
 
-    div.innerHTML = `
-      <div class="bubble">
-        ${msg.content}
-        <span class="time">
-          ${new Date(msg.createdAt).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit"
-          })}
-        </span>
-      </div>
-    `;
+  div.innerHTML = `
+    <div class="bubble">
+      <strong>${msg.username}:</strong> ${msg.content}
+      <span class="time">
+        ${new Date(msg.createdAt).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit"
+        })}
+      </span>
+    </div>
+  `;
 
-    messagesDiv.appendChild(div);
-  }
+  messagesDiv.appendChild(div);
+}
+
 
   function sendMessage() {
     const text = input.value.trim();
