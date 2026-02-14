@@ -10,7 +10,16 @@
 <div class="app">
 
   <!-- Sidebar -->
-  <div class="sidebar" id="userList"></div>
+  <div class="sidebar">
+
+    <div class="search-box">
+      <input type="text" id="emailSearch" placeholder="Enter user email">
+      <button id="joinBtn">Join</button>
+    </div>
+
+    <div id="userList"></div>
+
+  </div>
 
   <!-- Chat Section -->
   <div class="chat-section">
@@ -22,17 +31,14 @@
     <div class="chat-body" id="messages"></div>
 
     <div class="chat-footer">
-      <input
-        type="text"
-        id="msgInput"
-        placeholder="Type a message"
-      />
+      <input type="text" id="msgInput" placeholder="Type a message">
       <button id="sendBtn">➤</button>
     </div>
 
   </div>
 
 </div>
+
 
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 <script src="chat.js"></script>

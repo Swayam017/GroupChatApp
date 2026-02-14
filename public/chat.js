@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const input = document.getElementById("msgInput");
   const sendBtn = document.getElementById("sendBtn");
   const chatTitle = document.getElementById("chatTitle");
+  const joinBtn = document.getElementById("joinBtn");
+  const emailInput = document.getElementById("emailSearch");
 
   let currentReceiverId = null;
   let currentRoom = null;
@@ -38,9 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const div = document.createElement("div");
         div.className = "user-item";
         div.innerText = user.name;
-
         div.addEventListener("click", () => openChat(user));
-
         userListDiv.appendChild(div);
       });
   }
@@ -55,7 +55,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         : `${currentReceiverId}-${userId}`;
 
     socket.emit("join_room", currentRoom);
-
     loadMessages();
   }
 
@@ -123,6 +122,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (e.key === "Enter") {
       sendMessage();
     }
+  });
+
+  // ✅ Email search join logic (CORRECT POSITION)
+  joinBtn.addEventListener("click", async () => {
+    const email = emailInput.value.trim();
+    if (!email) return;
+
+    const res = await fetch(
+      `http://localhost:3000/api/users/find?email=${email}`,
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+
+    const user = await res.json();
+
+    if (!user.id) {
+      alert("User not found");
+      return;
+    }
+
+    openChat(user);
   });
 
   loadUsers();

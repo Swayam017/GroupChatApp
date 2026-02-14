@@ -11,3 +11,14 @@ exports.getAllUsers = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+exports.findUserByEmail = async (req, res) => {
+  const { email } = req.query;
+
+  const user = await User.findOne({
+    where: { email },
+    attributes: ["id", "name"]
+  });
+
+  if (!user) return res.json({});
+  res.json(user);
+};

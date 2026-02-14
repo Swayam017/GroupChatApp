@@ -2,8 +2,106 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Login | WhatsApp Clone</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Login</title>
+  <style>/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", "Segoe UI", sans-serif;
+}
+
+/* ===== BACKGROUND ===== */
+body {
+  height: 100vh;
+  background: url("/assets/bg1.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+/* ===== LOGIN CARD ===== */
+.auth-container {
+  width: 380px;
+  padding: 40px;
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  color: white;
+  text-align: center;
+}
+
+.auth-container h2 {
+  font-size: 26px;
+  margin-bottom: 25px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* ===== INPUTS ===== */
+.auth-container input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 18px;
+  border-radius: 12px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  transition: 0.3s ease;
+}
+
+.auth-container input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.auth-container input:focus {
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 0 2px #00c6ff;
+}
+
+/* ===== BUTTON ===== */
+.auth-container button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  color: white;
+  transition: transform 0.2s ease;
+}
+
+.auth-container button:hover {
+  transform: scale(1.05);
+}
+
+/* ===== SWITCH LINK ===== */
+.switch {
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.switch a {
+  color: #00c6ff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.switch a:hover {
+  text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
