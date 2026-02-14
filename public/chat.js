@@ -124,11 +124,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // ✅ Email search join logic (CORRECT POSITION)
-  joinBtn.addEventListener("click", async () => {
-    const email = emailInput.value.trim();
-    if (!email) return;
+  function generateRoomId(email1, email2) {
+  return [email1.toLowerCase(), email2.toLowerCase()]
+    .sort()
+    .join("_");
+}
 
+
+  // ✅ Email search join logic (CORRECT POSITION)
+ joinBtn.addEventListener("click", async () => {
+  const email = emailInput.value.trim().toLowerCase();
+  if (!email) return;
+
+  try {
     const res = await fetch(
       `http://localhost:3000/api/users/find?email=${email}`,
       {
@@ -143,8 +151,28 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    openChat(user);
-  });
+    if (user.email === payload.email) {
+      alert("You cannot chat with yourself");
+      return;
+    }
+
+    // ✅ Generate consistent room
+    const roomId = generateRoomId(payload.email, email);
+
+    currentReceiverId = user.id;
+    currentRoom = roomId;
+
+    socket.emit("join_room", roomId);
+
+    chatTitle.innerText = user.name;
+
+    loadMessages();
+
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong");
+  }
+});
 
   loadUsers();
 });
