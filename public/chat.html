@@ -2,38 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Chat</title>
-  <link rel="stylesheet" href="chat.css" />
+  <title>Group Chat</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <div class="app">
 
-  <!-- HEADER -->
-  <div class="chat-header">
-    <div class="left">
-      <div class="avatar">S</div>
-      <div class="user-info">
-        <div class="name">Sharpenerians</div>
-        <div class="status">online</div>
-      </div>
+  <!-- Sidebar -->
+  <div class="sidebar" id="userList"></div>
+
+  <!-- Chat Section -->
+  <div class="chat-section">
+
+    <div class="chat-header">
+      <div class="chat-title" id="chatTitle">Select a user</div>
     </div>
-  </div>
 
-  <!-- ✅ THIS ID IS REQUIRED -->
-  <div class="chat-body" id="messages"></div>
+    <div class="chat-body" id="messages"></div>
 
-  <!-- FOOTER -->
-  <div class="chat-footer">
-    <!-- ✅ THIS ID IS REQUIRED -->
-    <input
-      type="text"
-      id="msgInput"
-      placeholder="Type a message"
-    />
+    <div class="chat-footer">
+      <input
+        type="text"
+        id="msgInput"
+        placeholder="Type a message"
+      />
+      <button id="sendBtn">➤</button>
+    </div>
 
-    <!-- ✅ THIS ID IS REQUIRED -->
-    <button id="sendBtn">➤</button>
   </div>
 
 </div>

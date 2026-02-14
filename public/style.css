@@ -1,59 +1,111 @@
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
   font-family: Arial, sans-serif;
 }
 
 body {
   background: #e5ddd5;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
 
-.auth-container {
+.app {
+  width: 900px;
+  height: 600px;
   background: white;
-  padding: 30px;
-  width: 320px;
+  display: flex;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  overflow: hidden;
 }
 
-.auth-container h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.auth-container input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 12px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-.auth-container button {
-  width: 100%;
-  padding: 10px;
-  background: #25D366;
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background: #111b21;
   color: white;
-  border: none;
-  border-radius: 5px;
+  overflow-y: auto;
+}
+
+.user-item {
+  padding: 15px;
   cursor: pointer;
-  font-size: 16px;
+  border-bottom: 1px solid #222;
 }
 
-.auth-container button:hover {
-  background: #1ebe5d;
+.user-item:hover {
+  background: #2a3942;
 }
 
-.switch {
-  text-align: center;
-  margin-top: 15px;
+/* Chat Section */
+.chat-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-.switch a {
-  color: #25D366;
-  text-decoration: none;
-  font-weight: bold;
+.chat-header {
+  padding: 15px;
+  background: #075e54;
+  color: white;
+}
+
+.chat-body {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  background: #efeae2;
+}
+
+.chat-footer {
+  padding: 10px;
+  display: flex;
+  background: #f0f2f5;
+}
+
+#msgInput {
+  flex: 1;
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+#sendBtn {
+  margin-left: 10px;
+  padding: 10px 15px;
+  border-radius: 50%;
+  border: none;
+  background: #25d366;
+  color: white;
+  cursor: pointer;
+}
+
+/* Messages */
+.sent {
+  text-align: right;
+  margin-bottom: 10px;
+}
+
+.received {
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.bubble {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 10px;
+  max-width: 60%;
+}
+
+.sent .bubble {
+  background: #dcf8c6;
+}
+
+.received .bubble {
+  background: white;
 }

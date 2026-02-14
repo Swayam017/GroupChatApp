@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const http = require("http");
 
+const userRoutes = require("./routes/userRoutes");
 const sequelize = require("./config/database");
 const authRoutes = require("./routes/authRoutes");
 const chatRoutes = require("./routes/chatRoutes");
@@ -16,6 +17,7 @@ app.use(express.static("public"));
 // REST APIs
 app.use("/api", authRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/users", userRoutes);
 
 const initSocket = require("./socket-io");
 
