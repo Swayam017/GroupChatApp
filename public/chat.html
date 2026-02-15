@@ -5,10 +5,15 @@
   <title>Group Chat</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
 <div class="app">
-
+<!-- Image Preview Modal -->
+<div id="imageModal" class="image-modal">
+  <span id="closeModal">&times;</span>
+  <img id="modalImage" />
+</div>
   <!-- Sidebar -->
   <div class="sidebar">
 
@@ -18,6 +23,21 @@
     </div>
 
     <div id="userList"></div>
+
+   <div class="groups-section">
+  <h3>Groups</h3>
+  <div id="groupList"></div>
+
+  <input type="text" id="newGroupName" placeholder="New group name">
+  <button id="createGroupBtn">Create Group</button>
+
+  <hr style="margin:10px 0">
+
+  <input type="text" id="addMemberEmail" placeholder="Add member by email">
+  <button id="addMemberBtn">Add Member</button>
+</div>
+
+
 
   </div>
 
@@ -32,6 +52,8 @@
 
     <div class="chat-footer">
       <input type="text" id="msgInput" placeholder="Type a message">
+      <input type="file" id="fileInput" hidden>
+      <button id="fileBtn">📎</button>
       <button id="sendBtn">➤</button>
     </div>
 

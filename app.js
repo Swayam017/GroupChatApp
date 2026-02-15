@@ -8,17 +8,25 @@ const userRoutes = require("./routes/userRoutes");
 const sequelize = require("./config/database");
 const authRoutes = require("./routes/authRoutes");
 const chatRoutes = require("./routes/chatRoutes");
+const groupRoutes = require("./routes/groupRoutes");
+const mediaRoutes = require("./routes/mediaRoutes");
+
+
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
+app.use("/uploads", express.static("uploads"));
+
 
 // REST APIs
 app.use("/api", authRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/groups", groupRoutes);
+app.use("/api/media", mediaRoutes);
 
 const initSocket = require("./socket-io");
 

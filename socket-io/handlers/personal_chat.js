@@ -26,6 +26,7 @@ function registerPersonalChat(io, socket) {
         username: socket.user.name,
         receiverId: data.receiverId,
         content: data.content,
+        type: data.type || "text",
         createdAt: savedMessage.createdAt
       });
 

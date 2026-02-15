@@ -2,6 +2,8 @@ const { Server } = require("socket.io");
 //const registerChatHandlers = require("./handlers/chat");
 const socketMiddleware = require("./middleware");
 const registerPersonalChat = require("./handlers/personal_chat");
+const registerGroupChat = require("./handlers/groupChat");
+
 
 function initSocket(server) {
   const io = new Server(server, {
@@ -15,6 +17,7 @@ function initSocket(server) {
 
    // registerChatHandlers(io, socket);
       registerPersonalChat(io, socket);
+      registerGroupChat(io, socket);
 
     socket.on("disconnect", () => {
       console.log("User disconnected:", socket.user.name);
