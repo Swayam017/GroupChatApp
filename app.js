@@ -10,6 +10,7 @@ const authRoutes = require("./routes/authRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const groupRoutes = require("./routes/groupRoutes");
 const mediaRoutes = require("./routes/mediaRoutes");
+const startArchiveJob = require("./jobs/archiveMessages");
 
 
 
@@ -36,8 +37,11 @@ const server = http.createServer(app);
 initSocket(server);
 
 // DB sync
-sequelize.sync()
-  .then(() => console.log("Database connected"))
+sequelize.sync({ alter: true })
+  .then(() => {
+    console.log("Database connected");
+    startArchiveJob();  //  Start cron
+  })
   .catch(err => console.log(err));
 
 server.listen(3000, () => {

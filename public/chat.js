@@ -266,6 +266,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let contentHTML;
 
   const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(msg.content);
+  const isVideo = /\.(mp4|webm|ogg)$/i.test(msg.content);
   const isFileURL = msg.content.startsWith("http");
 
   if (isImage) {
@@ -274,7 +275,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       <img 
         src="${msg.content}" 
         class="chat-image"
-        style="max-width:250px;border-radius:12px;cursor:pointer;margin-top:5px;">
+        style="max-width:250px;border-radius:12px;cursor:pointer;">
+    `;
+
+  } else if (isVideo) {
+
+    contentHTML = `
+      <video 
+        controls 
+        style="max-width:250px;border-radius:12px;">
+        <source src="${msg.content}">
+        Your browser does not support video.
+      </video>
     `;
 
   } else if (isFileURL) {

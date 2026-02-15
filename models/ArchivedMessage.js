@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-const Message = sequelize.define("Message", {
+const ArchivedMessage = sequelize.define("ArchivedMessage", {
   senderId: {
     type: DataTypes.INTEGER,
     allowNull: false
@@ -18,10 +18,12 @@ const Message = sequelize.define("Message", {
     type: DataTypes.TEXT,
     allowNull: false
   },
-   type: {
+  type: {
     type: DataTypes.STRING,
     defaultValue: "text"
   }
+}, {
+  timestamps: true
 });
 
-module.exports = Message;
+module.exports = ArchivedMessage;
