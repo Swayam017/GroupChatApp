@@ -11,7 +11,7 @@ const chatRoutes = require("./routes/chatRoutes");
 const groupRoutes = require("./routes/groupRoutes");
 const mediaRoutes = require("./routes/mediaRoutes");
 const startArchiveJob = require("./jobs/archiveMessages");
-
+const aiRoutes = require("./routes/aiRoutes");
 
 
 const app = express();
@@ -28,6 +28,7 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/groups", groupRoutes);
 app.use("/api/media", mediaRoutes);
+app.use("/api/ai", aiRoutes);
 
 const initSocket = require("./socket-io");
 

@@ -19,7 +19,9 @@ const User = sequelize.define("User", {
   password: {
     type: DataTypes.STRING,
     allowNull: false
-  }
+  },
+  tone: DataTypes.STRING // "casual" | "formal" | "emoji"
+
 });
 
 module.exports = User;
