@@ -1,6 +1,6 @@
 const generateContent = require("../utils/gemini");
 
-/* ================= PREDICT NEXT ================= */
+// PREDICT NEXT 
 
 exports.predictNext = async (req, res) => {
   try {
@@ -48,7 +48,7 @@ No explanation.
 };
 
 
-/* ================= SMART REPLIES ================= */
+// SMART REPLIES 
 
 exports.smartReplies = async (req, res) => {
   try {

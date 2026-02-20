@@ -17,7 +17,7 @@ async function socketMiddleware(socket, next) {
       return next(new Error("User not found"));
     }
 
-    socket.user = user;   // 🔥 attach full user
+    socket.user = user;  
 
     next();
   } catch (err) {

@@ -14,7 +14,7 @@ function registerChatHandlers(io, socket) {
       io.emit("newMessage", {
         id: savedMessage.id,
         senderId: socket.user.id,
-        username: socket.user.name,   // 🔥 include username
+        username: socket.user.name,   // include username
         receiverId: data.receiverId,
         content: data.content,
         createdAt: savedMessage.createdAt

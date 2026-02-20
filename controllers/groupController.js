@@ -10,7 +10,7 @@ exports.createGroup = async (req, res) => {
 
     const group = await Group.create({ name });
 
-    await group.addUser(req.userId); // cleaner way
+    await group.addUser(req.userId); 
 
     res.json(group);
   } catch (err) {

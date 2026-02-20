@@ -145,7 +145,7 @@ body {
   font-size: 16px;
   cursor: pointer;
 }
-/* ================= IMAGE MODAL ================= */
+
 
 .image-modal {
   display: none;
@@ -179,7 +179,6 @@ body {
   cursor: pointer;
 }
 
-/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }

@@ -30,7 +30,13 @@ document.addEventListener("DOMContentLoaded", () => {
           alert(result.message || "Signup failed");
         }
       } catch (err) {
-        alert("Server error");
+       console.error("SIGNUP ERROR FULL:", err);
+
+  if (err.name === "SequelizeUniqueConstraintError") {
+    return res.status(400).json({ message: "Email or phone already registered" });
+  }
+
+  res.status(500).json({ message: "Server error" });
       }
     });
   }

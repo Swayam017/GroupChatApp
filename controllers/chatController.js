@@ -11,7 +11,7 @@ exports.sendMessage = async (req, res) => {
       content
     });
 
-    // 🔥 Emit real-time message
+    // Emit real-time message
     const io = req.app.get("io");
     io.emit("newMessage", message);
 

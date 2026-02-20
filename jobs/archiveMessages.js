@@ -6,19 +6,19 @@ const ArchivedMessage = require("../models/ArchivedMessage");
 function startArchiveJob() {
 
   // Runs every day at 2 AM
-  //cron.schedule("0 2 * * *", async () => {
-cron.schedule("*/1 * * * *", async () => {
+  cron.schedule("0 2 * * *", async () => {
+//cron.schedule("*/1 * * * *", async () => {
 
     console.log("Running archive job...");
 
     const oneDayAgo = new Date();
-   // oneDayAgo.setDate(oneDayAgo.getDate() - 1);
-   oneDayAgo.setMinutes(oneDayAgo.getMinutes() - 1);
+   oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+  // oneDayAgo.setMinutes(oneDayAgo.getMinutes() - 1);
 
 
     try {
 
-      // 1️⃣ Find old messages
+      //  Find old messages
       const oldMessages = await Message.findAll({
         where: {
           createdAt: {
@@ -32,12 +32,12 @@ cron.schedule("*/1 * * * *", async () => {
         return;
       }
 
-      // 2️⃣ Insert into ArchivedMessage table
+      // Insert into ArchivedMessage table
       await ArchivedMessage.bulkCreate(
         oldMessages.map(msg => msg.toJSON())
       );
 
-      // 3️⃣ Delete from main Message table
+      // Delete from main Message table
       await Message.destroy({
         where: {
           createdAt: {

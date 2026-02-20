@@ -3,17 +3,17 @@ const Group = require("./Group");
 const GroupMember = require("./GroupMember");
 const Message = require("./Message");
 
-/* ===== MANY TO MANY (Users <-> Groups) ===== */
+// MANY TO MANY 
 
 User.belongsToMany(Group, { through: GroupMember });
 Group.belongsToMany(User, { through: GroupMember });
 
-/* ===== PERSONAL MESSAGES ===== */
+//PERSONAL MESSAGES 
 
 User.hasMany(Message, { foreignKey: "senderId" });
 Message.belongsTo(User, { foreignKey: "senderId" });
 
-/* ===== GROUP MESSAGES ===== */
+// GROUP MESSAGES
 
 Group.hasMany(Message, { foreignKey: "groupId" });
 Message.belongsTo(Group, { foreignKey: "groupId" });
