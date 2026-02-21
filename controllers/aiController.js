@@ -3,8 +3,11 @@ const generateContent = require("../utils/gemini");
 // PREDICT NEXT 
 
 exports.predictNext = async (req, res) => {
+  console.log("predictNext API hit");
+
   try {
     const { text } = req.body;
+    console.log("Text received:", text);
 
     if (!text || text.trim().length < 2) {
       return res.json({ suggestions: [] });
@@ -27,7 +30,7 @@ No explanation.
 `;
 
     const aiResponse = await generateContent(prompt);
-
+console.log("AI RAW RESPONSE:", aiResponse);
     if (!aiResponse) {
       return res.json({ suggestions: [] });
     }

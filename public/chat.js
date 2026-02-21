@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
 
-  // AUTH 
+  /* ================= AUTH ================= */
 
   const token = localStorage.getItem("token");
   if (!token) {
@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const payload = JSON.parse(atob(token.split(".")[1]));
   const userId = payload.userId;
 
-  // SOCKET 
+  /* ================= SOCKET ================= */
 
   const socket = io("http://localhost:3000", {
     auth: { token }
@@ -26,38 +26,73 @@ document.addEventListener("DOMContentLoaded", async () => {
   const sendBtn = document.getElementById("sendBtn");
   const chatTitle = document.getElementById("chatTitle");
 
-  const createGroupBtn = document.getElementById("createGroupBtn");
-  const newGroupName = document.getElementById("newGroupName");
-
   const joinBtn = document.getElementById("joinBtn");
   const emailInput = document.getElementById("emailSearch");
+
+  const createGroupBtn = document.getElementById("createGroupBtn");
+  const newGroupName = document.getElementById("newGroupName");
+  const addMemberBtn = document.getElementById("addMemberBtn");
+  const addMemberEmail = document.getElementById("addMemberEmail");
 
   const fileBtn = document.getElementById("fileBtn");
   const fileInput = document.getElementById("fileInput");
 
+  const suggestionsDiv = document.getElementById("suggestions");
+
   const imageModal = document.getElementById("imageModal");
   const modalImage = document.getElementById("modalImage");
+  const closeModal = document.getElementById("closeModal");
 
-  // STATE 
+  const profileName = document.getElementById("profileName");
+const profileEmail = document.getElementById("profileEmail");
+const profileAvatar = document.getElementById("profileAvatar");
 
-  let chatMode = null;
+async function loadProfile() {
+  try {
+    const res = await fetch("http://localhost:3000/api/users/me", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (!res.ok) {
+      console.error("Failed to load profile");
+      return;
+    }
+
+    const user = await res.json();
+
+    profileName.innerText = user.name;
+    profileEmail.innerText = user.email;
+    profileAvatar.innerText = user.name.charAt(0).toUpperCase();
+
+  } catch (err) {
+    console.error("Profile error:", err);
+  }
+}
+
+loadProfile();
+
+  /* ================= STATE ================= */
+
+  let chatMode = null; // personal | group
   let currentReceiverId = null;
-  let currentRoom = null;
   let currentGroupId = null;
+  let currentRoom = null;
 
-  // UTIL 
+  /* ================= UTIL ================= */
 
   function scrollBottom() {
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
   }
 
-  function generateRoomId(email1, email2) {
-    return [email1.toLowerCase(), email2.toLowerCase()]
-      .sort()
-      .join("_");
+  function debounce(func, delay) {
+    let timeout;
+    return (...args) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func(...args), delay);
+    };
   }
 
-  //LOAD USERS 
+  /* ================= LOAD USERS ================= */
 
   async function loadUsers() {
     const res = await fetch("http://localhost:3000/api/users", {
@@ -69,15 +104,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const users = await res.json();
     userListDiv.innerHTML = "";
 
-    users
-      .filter(user => user.id !== userId)
-      .forEach(user => {
-        const div = document.createElement("div");
-        div.className = "user-item";
-        div.innerText = user.name;
-        div.onclick = () => openPersonalChat(user);
-        userListDiv.appendChild(div);
-      });
+    users.filter(u => u.id !== userId).forEach(user => {
+      const div = document.createElement("div");
+      div.className = "user-item";
+      div.innerText = user.name;
+      div.onclick = () => openPersonalChat(user);
+      userListDiv.appendChild(div);
+    });
   }
 
   function openPersonalChat(user) {
@@ -85,13 +118,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     currentReceiverId = user.id;
     currentGroupId = null;
 
-    messagesDiv.innerHTML = "";
     chatTitle.innerText = user.name;
+    messagesDiv.innerHTML = "";
 
     currentRoom =
-      userId < currentReceiverId
-        ? `${userId}-${currentReceiverId}`
-        : `${currentReceiverId}-${userId}`;
+      userId < user.id
+        ? `${userId}-${user.id}`
+        : `${user.id}-${userId}`;
 
     socket.emit("join_room", currentRoom);
     loadPersonalMessages();
@@ -111,10 +144,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     scrollBottom();
   }
 
-  // LOAD GROUPS
+  /* ================= LOAD GROUPS ================= */
 
   async function loadGroups() {
-    const res = await fetch("http://localhost:3000/api/groups/", {
+    const res = await fetch("http://localhost:3000/api/groups", {
       headers: { Authorization: `Bearer ${token}` }
     });
 
@@ -137,8 +170,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     currentGroupId = group.id;
     currentReceiverId = null;
 
-    messagesDiv.innerHTML = "";
     chatTitle.innerText = group.name;
+    messagesDiv.innerHTML = "";
 
     socket.emit("join_group", group.id);
     loadGroupMessages(group.id);
@@ -158,7 +191,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     scrollBottom();
   }
 
-  // CREATE GROUP 
+    // CREATE GROUP 
 
   createGroupBtn?.addEventListener("click", async () => {
     const name = newGroupName.value.trim();
@@ -181,8 +214,38 @@ document.addEventListener("DOMContentLoaded", async () => {
     newGroupName.value = "";
     loadGroups();
   });
-const addMemberBtn = document.getElementById("addMemberBtn");
-const addMemberEmail = document.getElementById("addMemberEmail");
+  /* ================= SEND MESSAGE ================= */
+
+  function sendMessage() {
+    const text = input.value.trim();
+    if (!text || !chatMode) return;
+
+    if (chatMode === "personal") {
+      socket.emit("new_message", {
+        room: currentRoom,
+        receiverId: currentReceiverId,
+        content: text,
+        type: "text"
+      });
+    }
+
+    if (chatMode === "group") {
+      socket.emit("group_message", {
+        groupId: currentGroupId,
+        content: text,
+        type: "text"
+      });
+    }
+
+    input.value = "";
+    suggestionsDiv.innerHTML = "";
+  }
+
+  sendBtn.addEventListener("click", sendMessage);
+  input.addEventListener("keydown", e => {
+    if (e.key === "Enter") sendMessage();
+  });
+
 
 addMemberBtn?.addEventListener("click", async () => {
 
@@ -239,38 +302,7 @@ addMemberBtn?.addEventListener("click", async () => {
     openPersonalChat(user);
   });
 
-  // SEND MESSAGE 
-
-  function sendMessage() {
-    const text = input.value.trim();
-    if (!text || !chatMode) return;
-
-    if (chatMode === "personal") {
-      socket.emit("new_message", {
-        room: currentRoom,
-        receiverId: currentReceiverId,
-        content: text,
-        type: "text"
-      });
-    }
-
-    if (chatMode === "group") {
-      socket.emit("group_message", {
-        groupId: currentGroupId,
-        content: text,
-        type: "text"
-      });
-    }
-
-    input.value = "";
-  }
-
-  sendBtn.addEventListener("click", sendMessage);
-  input.addEventListener("keydown", e => {
-    if (e.key === "Enter") sendMessage();
-  });
-
-  // FILE UPLOAD 
+  /* ================= FILE UPLOAD ================= */
 
   fileBtn?.addEventListener("click", () => fileInput.click());
 
@@ -313,30 +345,43 @@ addMemberBtn?.addEventListener("click", async () => {
     fileInput.value = "";
   });
 
-  // RECEIVE 
+  /* ================= RECEIVE ================= */
 
-  socket.on("receive_message", (msg) => {
-    if (chatMode === "personal") renderMessage(msg);
+  socket.on("receive_message", msg => {
+    if (
+      chatMode === "personal" &&
+      (
+        (msg.senderId === userId && msg.receiverId === currentReceiverId) ||
+        (msg.senderId === currentReceiverId && msg.receiverId === userId)
+      )
+    ) {
+      renderMessage(msg);
+    }
   });
 
-  socket.on("receive_group_message", (msg) => {
-    if (chatMode === "group") renderMessage(msg);
+  socket.on("receive_group_message", msg => {
+    if (chatMode === "group" && msg.groupId === currentGroupId) {
+      renderMessage(msg);
+    }
   });
 
-  // RENDER 
+  /* ================= RENDER ================= */
 
   function renderMessage(msg) {
     const div = document.createElement("div");
     div.className = msg.senderId === userId ? "sent" : "received";
 
     const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(msg.content);
-    const isFileURL = msg.content.startsWith("http");
+    const isVideo = /\.(mp4|webm|ogg)$/i.test(msg.content);
+    const isURL = msg.content.startsWith("http");
 
     let contentHTML = msg.content;
 
     if (isImage) {
       contentHTML = `<img src="${msg.content}" class="chat-image" style="max-width:250px;border-radius:12px;cursor:pointer;">`;
-    } else if (isFileURL) {
+    } else if (isVideo) {
+      contentHTML = `<video controls style="max-width:250px;border-radius:12px;"><source src="${msg.content}"></video>`;
+    } else if (isURL) {
       contentHTML = `<a href="${msg.content}" target="_blank">📎 Download File</a>`;
     }
 
@@ -351,39 +396,61 @@ addMemberBtn?.addEventListener("click", async () => {
     scrollBottom();
   }
 
- // IMAGE PREVIEW 
+  /* ================= IMAGE PREVIEW ================= */
 
-const closeModal = document.getElementById("closeModal");
+  document.addEventListener("click", e => {
+    if (e.target.classList.contains("chat-image")) {
+      modalImage.src = e.target.src;
+      imageModal.style.display = "flex";
+    }
+  });
 
-// Open image preview
-document.addEventListener("click", (e) => {
-  if (e.target.classList.contains("chat-image")) {
-    modalImage.src = e.target.src;
-    imageModal.style.display = "flex";
-  }
-});
-
-// Close using X button
-closeModal?.addEventListener("click", () => {
-  imageModal.style.display = "none";
-});
-
-// Close when clicking outside image
-imageModal?.addEventListener("click", (e) => {
-  if (e.target === imageModal) {
+  closeModal?.addEventListener("click", () => {
     imageModal.style.display = "none";
-  }
-});
+  });
 
-// Close with ESC key
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    imageModal.style.display = "none";
-  }
-});
+  imageModal?.addEventListener("click", e => {
+    if (e.target === imageModal) {
+      imageModal.style.display = "none";
+    }
+  });
 
+  /* ================= AI SUGGESTIONS ================= */
 
-  // INIT 
+  input.addEventListener("input", debounce(async () => {
+    const text = input.value.trim();
+   if (!text || text.endsWith(" ")) {
+  suggestionsDiv.innerHTML = "";
+  return;
+}
+
+    const res = await fetch("http://localhost:3000/api/ai/predict", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ text })
+    });
+
+    if (!res.ok) return;
+
+    const data = await res.json();
+    suggestionsDiv.innerHTML = "";
+
+    data.suggestions.forEach(s => {
+      const btn = document.createElement("button");
+      btn.className = "suggest-btn";
+      btn.innerText = s;
+      btn.onclick = () => {
+        input.value = s;
+        suggestionsDiv.innerHTML = "";
+      };
+      suggestionsDiv.appendChild(btn);
+    });
+  }, 600));
+
+  /* ================= INIT ================= */
 
   loadUsers();
   loadGroups();

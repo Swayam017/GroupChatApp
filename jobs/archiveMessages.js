@@ -13,7 +13,7 @@ function startArchiveJob() {
 
     const oneDayAgo = new Date();
    oneDayAgo.setDate(oneDayAgo.getDate() - 1);
-  // oneDayAgo.setMinutes(oneDayAgo.getMinutes() - 1);
+   //oneDayAgo.setMinutes(oneDayAgo.getMinutes() - 1);
 
 
     try {

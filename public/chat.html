@@ -17,27 +17,42 @@
   <!-- Sidebar -->
   <div class="sidebar">
 
+      <!-- PROFILE -->
+  <div class="profile-box">
+    <div class="profile-avatar" id="profileAvatar">S</div>
+    <div class="profile-info">
+      <div class="profile-name" id="profileName">Loading...</div>
+      <div class="profile-email" id="profileEmail"></div>
+    </div>
+  </div>
+
     <div class="search-box">
       <input type="text" id="emailSearch" placeholder="Enter user email">
       <button id="joinBtn">Join</button>
     </div>
 
-    <div id="userList"></div>
+      <!-- USERS SECTION -->
+  <div class="list-section">
+    <div class="list-title">Users</div>
+    <div id="userList" class="list-container"></div>
+  </div>
 
-   <div class="groups-section">
-  <h3>Groups</h3>
-  <div id="groupList"></div>
+   <!-- GROUPS SECTION -->
+  <div class="list-section groups-section">
+    <div class="list-title">Groups</div>
+    <div id="groupList" class="list-container"></div>
 
-  <input type="text" id="newGroupName" placeholder="New group name">
-  <button id="createGroupBtn">Create Group</button>
+  <div class="group-form">
+    <input type="text" id="newGroupName" placeholder="Enter group name" />
+    <button id="createGroupBtn">Create</button>
+  </div>
 
-  <hr style="margin:10px 0">
+  <div class="group-form">
+    <input type="text" id="addMemberEmail" placeholder="Add member by email" />
+    <button id="addMemberBtn">Add</button>
+  </div>
 
-  <input type="text" id="addMemberEmail" placeholder="Add member by email">
-  <button id="addMemberBtn">Add Member</button>
 </div>
-
-
 
   </div>
 
